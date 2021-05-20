@@ -47,18 +47,10 @@ exports.Login = async (req, res, next) => {
     const user = await User.findOne({ email }).select("+password");
 
     //if user no tpresent through error
-    if (!user) {
-      res.status(404).json({
-        success: false,
-        error: "Invalid Credentials",
-      });
-    }
 
     //If user is present then
 
-    const ismatch = await user.Matchpasswords(password);
-
-    if (!ismatch) {
+    if (!user || !(await user.Matchpasswords(password))) {
       res.status(404).json({
         success: false,
         error: "Invalid Credentials",
@@ -77,8 +69,6 @@ exports.Login = async (req, res, next) => {
       message: error.message,
     });
   }
-
-  res.json({});
 };
 exports.forgotPassword = (req, res, next) => {
   res.json({
