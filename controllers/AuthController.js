@@ -1,9 +1,21 @@
 exports.Register = (req, res, next) => {
-  res.json("Register Route");
+  res.json({
+    message: "this is a register route",
+  });
 };
-exports.Register = (req, res, next) => {
-  res.json("Register Route");
+exports.Login = (req, res, next) => {
+  res.json({
+    message: "this is a login route",
+  });
 };
-exports.Register = (req, res, next) => {
-  res.json("Register Route");
+exports.forgotPassword = (req, res, next) => {
+  res.json({
+    message: "this is a forgot pass route",
+  });
+};
+
+exports.resetPassword = (req, res, next) => {
+  res.json({
+    message: "this is a reset pass route",
+  });
 };

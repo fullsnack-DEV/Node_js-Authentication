@@ -6,7 +6,14 @@ const express = require("express");
 
 const app = express();
 
-const Port = process.env.port || 3000;
+const Authroutes = require("./routes/Authroutes");
+
+//Piece of the middleware that gonna allow us to get the data from the body
+app.use(express.json());
+
+app.use("/api/auth", Authroutes);
+
+const Port = process.env.port || 5000;
 
 app.listen(Port, () => {
   console.log("hello");
