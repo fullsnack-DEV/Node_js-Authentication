@@ -32,6 +32,8 @@ const Userschema = new mongoose.Schema({
 
 //encrypting a Password
 //using the bceyppt to hasing the password
+
+//using the pre hook
 Userschema.pre("save", async function (next) {
   if (!this.isModified("password")) {
     next();
@@ -41,6 +43,10 @@ Userschema.pre("save", async function (next) {
   this.password = await bcryptjs.hash(this.password, salt);
   next();
 });
+
+Userschema.methods.Matchpasswords = async function (password) {
+  return await bcryptjs.compare(password, this.password);
+};
 
 //Applying  a schema
 
