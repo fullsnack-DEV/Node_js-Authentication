@@ -5,6 +5,8 @@ require("dotenv").config({ path: "./config.env" });
 require("dotenv").config({ path: "./config.env" });
 const express = require("express");
 const connectdb = require("./config/DataBase");
+//error hamdler
+const errorhandler = require("./middlewares/Errrormiddleware");
 
 const Authroutes = require("./routes/Authroutes");
 
@@ -18,6 +20,8 @@ const app = express();
 app.use(express.json());
 
 app.use("/api/auth", Authroutes);
+
+app.use(errorhandler);
 
 const Port = process.env.port || 5000;
 

@@ -1,4 +1,5 @@
 const User = require("../Model/Users");
+const ErrorResponse = require("../Utils/errorResponse");
 
 exports.Register = async (req, res, next) => {
   //getting the data from the body
@@ -19,11 +20,7 @@ exports.Register = async (req, res, next) => {
       user: user,
     });
   } catch (err) {
-    res.status(500).json({
-      //catching the error
-      success: false,
-      message: err.message,
-    });
+    next(err);
   }
 };
 exports.Login = async (req, res, next) => {
@@ -33,10 +30,9 @@ exports.Login = async (req, res, next) => {
 
   //checking if email and password present
   if (!email || !password) {
-    res.status(400).json({
-      success: false,
-      error: "Please Provide the valid Email and Password",
-    });
+    return next(
+      new ErrorResponse("Please provide the email and Password", 401)
+    );
   }
 
   try {
@@ -51,10 +47,7 @@ exports.Login = async (req, res, next) => {
     //If user is present then
 
     if (!user || !(await user.Matchpasswords(password))) {
-      res.status(404).json({
-        success: false,
-        error: "Invalid Credentials",
-      });
+      return next(new ErrorResponse("Invalid credentials", 404));
     }
 
     res.status(200).json({
@@ -64,10 +57,7 @@ exports.Login = async (req, res, next) => {
       user,
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+    next(error);
   }
 };
 exports.forgotPassword = (req, res, next) => {
