@@ -49,7 +49,7 @@ Userschema.methods.Matchpasswords = async function (password) {
 };
 
 //token method implementation
-Userschema.methods.GetSignedtoken = async function () {
+Userschema.methods.GetSignedtoken = function () {
   //Require id to verify the token
   //jwt.sign takes the couple of input
   //we need id
