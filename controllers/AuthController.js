@@ -14,11 +14,14 @@ exports.Register = async (req, res, next) => {
       password,
     });
 
-    res.status(201).json({
-      //sending the user back
-      success: true,
-      user: user,
-    });
+    // res.status(201).json({
+    //   //sending the user back
+    //   success: true,
+    //   user: user,
+    //imsted of sending the above response twice. we are mwking the function for it so that we can use it in different places
+    sendtoken(user, 201, res);
+
+    // });
   } catch (err) {
     next(err);
   }
@@ -50,12 +53,7 @@ exports.Login = async (req, res, next) => {
       return next(new ErrorResponse("Invalid credentials", 404));
     }
 
-    res.status(200).json({
-      //sending the user back
-      success: true,
-      Token: "fjkfjvfi",
-      user,
-    });
+    sendtoken(user, 200, res);
   } catch (error) {
     next(error);
   }
@@ -70,4 +68,11 @@ exports.resetPassword = (req, res, next) => {
   res.json({
     message: "this is a reset pass route",
   });
+};
+
+//to send the token to the user
+
+const sendtoken = (user, statusCode, res) => {
+  const token = user.GetSignedtoken(); //getting token via a schema method
+  res.status(statusCode).json({ success: true, token });
 };

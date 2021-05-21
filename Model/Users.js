@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const bcryptjs = require("bcryptjs");
-
+const jwt = require("jsonwebtoken");
 //creating a schema  //we have  to instantiouts
 const Userschema = new mongoose.Schema({
   username: {
@@ -46,6 +46,19 @@ Userschema.pre("save", async function (next) {
 
 Userschema.methods.Matchpasswords = async function (password) {
   return await bcryptjs.compare(password, this.password);
+};
+
+//token method implementation
+Userschema.methods.GetSignedtoken = async function () {
+  //Require id to verify the token
+  //jwt.sign takes the couple of input
+  //we need id
+  // we need SECRET for the token
+  // we can also pass the extra options
+
+  return jwt.sign({ id: this._id }, process.env.SECRET_JWTTOKEN, {
+    expiresIn: process.env.EXPIRES,
+  });
 };
 
 //Applying  a schema
