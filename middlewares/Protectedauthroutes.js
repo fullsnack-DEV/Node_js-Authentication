@@ -8,11 +8,11 @@ exports.Protected = async (req, res, next) => {
   let token;
 
   if (
-    req.headers["authorization"] &&
-    req.headers["authorization"].startsWith("Bearer")
+    req.headers.authorization &&
+    req.headers.authorization.startsWith("Bearer")
   ) {
     //if token is present then take that token
-    token = req.headers["authorization"].split(" ")[1]; //what is this?
+    token = req.headers.authorization.split(" ")[1]; //what is this?
 
     //so Our headers gonna look  something like this
     //"Bearer dkjfhkdshyiufsyksdhfkshfkshsiuyfihfksdhfiusfhksdhfskjdjfhskuhyfuskhf"
