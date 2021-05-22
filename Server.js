@@ -9,7 +9,7 @@ const connectdb = require("./config/DataBase");
 const errorhandler = require("./middlewares/Errrormiddleware");
 
 const Authroutes = require("./routes/Authroutes");
-
+const Protectedroute = require("./routes/Protected");
 connectdb();
 
 const app = express();
@@ -19,7 +19,8 @@ const app = express();
 //Piece of the middleware that gonna allow us to get the data from the body
 app.use(express.json());
 
-app.use("/api/auth", Authroutes);
+app.use("/api/auth", Authroutes); //auth Rouets
+app.use("/api/Private", Protectedroute); //Protected routes
 
 app.use(errorhandler);
 
