@@ -1,3 +1,4 @@
+const crypto = require("crypto");
 const mongoose = require("mongoose");
 const bcryptjs = require("bcryptjs");
 const jwt = require("jsonwebtoken");
@@ -43,7 +44,7 @@ Userschema.pre("save", async function (next) {
   this.password = await bcryptjs.hash(this.password, salt);
   next();
 });
-
+//This all are the instance Methods
 Userschema.methods.Matchpasswords = async function (password) {
   return await bcryptjs.compare(password, this.password);
 };
@@ -59,6 +60,20 @@ Userschema.methods.GetSignedtoken = function () {
   return jwt.sign({ id: this._id }, process.env.SECRET_JWTTOKEN, {
     expiresIn: process.env.EXPIRES,
   });
+};
+
+//for Forgot Password
+Userschema.methods.Getresetpasswordtoken = function () {
+  //genrate a token for reset password
+  const resettoken = crypto.randomBytes(32).toString("hex");
+  this.resetpasswordtoken = crypto
+    .createHash("sha256")
+    .update(resettoken)
+    .digest("hex");
+
+  this.resetpasswordExpire = Date.now() + 10 * (60 * 1000);
+
+  return resettoken;
 };
 
 //Applying  a schema

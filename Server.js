@@ -1,4 +1,4 @@
-//creating a basic express server
+//creating a basic express server 🤠
 
 require("dotenv").config({ path: "./config.env" });
 
@@ -14,7 +14,7 @@ connectdb();
 
 const app = express();
 
-//connect DB
+//connect DB 💪
 
 //Piece of the middleware that gonna allow us to get the data from the body
 app.use(express.json());
@@ -30,9 +30,11 @@ const server = app.listen(Port, () => {
   console.log(`hello from the Port ${Port}`);
 });
 
-//handling the crashing of the server
+//handling the crashing of the server 🤦‍♂️
 
 process.on("unhandledRejection", (err, Promise) => {
   console.log(`ERROR LOGGED: ${err}`);
   server.close(() => process.exit(1));
 });
+
+//Now Doing a Forgot Password and Reset Password

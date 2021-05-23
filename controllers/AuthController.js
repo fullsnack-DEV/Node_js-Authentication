@@ -1,5 +1,6 @@
 const User = require("../Model/Users");
 const ErrorResponse = require("../Utils/errorResponse");
+const SendEmail = require("../Utils/Sendemail");
 
 exports.Register = async (req, res, next) => {
   //getting the data from the body
@@ -58,10 +59,57 @@ exports.Login = async (req, res, next) => {
     next(error);
   }
 };
-exports.forgotPassword = (req, res, next) => {
-  res.json({
-    message: "this is a forgot pass route",
-  });
+exports.forgotPassword = async (req, res, next) => {
+  //Steps To implement a Forgot PAssword
+  //1--> We gonna get the email from the body
+  //destructuring
+
+  try {
+    //First check if user exists in dB or not
+    const user = await User.findOne({ email: req.body.email });
+
+    //If not Found
+
+    if (!user) {
+      return next(new ErrorResponse("Email Could not be sent", 404));
+    }
+
+    //If Found
+    const resettoken = user.Getresetpasswordtoken(); //saving the reset token to the user schema
+    await user.save();
+
+    //reset Url
+
+    const reseturl = `http://localhost:3000/passwordreset/${resettoken}`;
+
+    const message = `<h1> You have requsted Password Reset  </h1>
+                    <p> Please got to this link to reset your password  </p>
+                    <a href=${reseturl} clicktracking=off >${reseturl} </a>`;
+
+    try {
+      await SendEmail({
+        email: user.email,
+        subject: "Your Password reset token",
+        message,
+      });
+
+      res.status(200).json({
+        status: "success",
+        message: "Token sent to email ",
+      });
+    } catch (error) {
+      user.resetpasswordtoken = undefined;
+      user.resetpasswordExpire = undefined;
+
+      await user.save();
+
+      return next(new ErrorResponse("Email could not sent", 500));
+    }
+
+    console.log(user);
+  } catch (error) {
+    next(error);
+  }
 };
 
 exports.resetPassword = (req, res, next) => {
