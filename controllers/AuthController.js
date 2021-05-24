@@ -1,3 +1,4 @@
+const Crypto = require("crypto");
 const User = require("../Model/Users");
 const ErrorResponse = require("../Utils/errorResponse");
 const SendEmail = require("../Utils/Sendemail");
@@ -112,10 +113,36 @@ exports.forgotPassword = async (req, res, next) => {
   }
 };
 
-exports.resetPassword = (req, res, next) => {
-  res.json({
-    message: "this is a reset pass route",
-  });
+exports.resetPassword = async (req, res, next) => {
+  //reacreate the token
+  const resetpasswordtoken = Crypto.createHash("sha256")
+    .update(req.params.resetToken)
+    .digest("hex");
+
+  try {
+    const user = await User.findOne({
+      resetpasswordtoken,
+      resetpasswordExpire: { $gt: Date.now() },
+    });
+
+    if (!user) {
+      return next(new ErrorResponse("invalid reset token", 400));
+    }
+
+    user.password = req.body.password;
+    user.resetpasswordtoken = undefined;
+    user.resetpasswordExpire = undefined;
+
+    await user.save();
+
+    res.status(201).json({
+      success: true,
+      data: "Passwors change succssfuly",
+      token: user.GetSignedtoken(),
+    });
+  } catch (error) {
+    next(err);
+  }
 };
 
 //to send the token to the user
